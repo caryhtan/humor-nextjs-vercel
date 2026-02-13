@@ -1,0 +1,293 @@
+.sky {
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+    padding: 28px 24px 40px;
+    background: radial-gradient(1200px 700px at 18% 18%, #ffffffaa 0%, transparent 45%),
+      linear-gradient(180deg, #7fd3ff 0%, #bfe9ff 40%, #fdf6ff 100%);
+    color: #0b1b2b;
+  }
+  
+  /* Sun */
+  .sun {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #fff7b0 0%, #ffd25e 35%, #ffb84a 70%);
+    box-shadow: 0 30px 90px rgba(255, 200, 90, 0.4);
+    filter: blur(0px);
+    opacity: 0.95;
+  }
+  
+  /* Clouds */
+  .cloudLayer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.75;
+  }
+  
+  .cloud {
+    position: absolute;
+    width: 280px;
+    height: 90px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+    filter: blur(0.2px);
+  }
+  
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.86);
+    border-radius: 999px;
+  }
+  
+  .cloud::before {
+    width: 110px;
+    height: 110px;
+    left: 40px;
+    top: -50px;
+  }
+  
+  .cloud::after {
+    width: 150px;
+    height: 150px;
+    right: 30px;
+    top: -70px;
+  }
+  
+  .cloud1 { top: 90px; left: -120px; animation: drift 40s linear infinite; }
+  .cloud2 { top: 160px; left: -260px; transform: scale(0.85); animation: drift 54s linear infinite; }
+  .cloud3 { top: 230px; left: -180px; transform: scale(0.95); animation: drift 47s linear infinite; }
+  .cloud4 { top: 120px; left: -420px; transform: scale(0.75); animation: drift 65s linear infinite; }
+  
+  @keyframes drift {
+    0% { transform: translateX(-10vw) scale(var(--s, 1)); }
+    100% { transform: translateX(120vw) scale(var(--s, 1)); }
+  }
+  
+  /* Header */
+  .header {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+  
+  .brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+    font-size: 22px;
+  }
+  
+  .title {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: -0.6px;
+  }
+  
+  .subtitle {
+    margin: 6px 0 0;
+    font-size: 14px;
+    opacity: 0.75;
+  }
+  
+  .controls {
+    display: grid;
+    gap: 10px;
+    min-width: 280px;
+  }
+  
+  .control {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+  
+  .control input[type="range"] {
+    width: 100%;
+  }
+  
+  .controlValue {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
+  
+  /* Status pill */
+  .status {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 14px auto 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.09);
+    backdrop-filter: blur(10px);
+    font-size: 13px;
+    margin: 0;
+  }
+  
+  .pillError {
+    background: rgba(255, 230, 230, 0.75);
+    border: 1px solid rgba(255, 80, 80, 0.25);
+  }
+  
+  /* Flight zone */
+  .flightZone {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 62vh;
+    min-height: 520px;
+  }
+  
+  /* Bird */
+  .bird {
+    position: absolute;
+    top: var(--laneTop);
+    left: -30%;
+    transform: translateY(-50%);
+    animation: fly var(--dur) linear infinite;
+    animation-delay: var(--delay);
+    will-change: transform;
+  }
+  
+  @keyframes fly {
+    0%   { transform: translate(calc(-40vw + var(--xShift)), -50%) scale(var(--scale)); }
+    100% { transform: translate(calc(140vw + var(--xShift)), -50%) scale(var(--scale)); }
+  }  
+  
+  .birdWrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+    animation: bob 2.6s ease-in-out infinite;
+  }
+  
+  @keyframes bob {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-8px); }
+  }
+  
+  .birdSvg {
+    width: 70px;
+    height: 35px;
+    fill: rgba(10, 20, 30, 0.75);
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.15));
+    transform: rotate(-2deg);
+  }
+  
+  /* Caption bubble */
+  .bubble {
+    position: relative;
+    max-width: 460px;          /* was 320 */
+    padding: 16px 20px;        /* more breathing room */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+  }  
+  
+  .bubbleInner {
+    font-size: 18px;
+    line-height: 1.35;
+    letter-spacing: -0.1px;
+    color: #0b1b2b;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }  
+  
+  .bubbleTail {
+    position: absolute;
+    left: -10px;
+    top: 18px;
+    width: 14px;
+    height: 14px;
+    transform: rotate(45deg);
+    background: rgba(255, 255, 255, 0.84);
+    border-left: 1px solid rgba(255, 255, 255, 0.65);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  }
+  
+  /* Footer */
+  .footer {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 10px auto 0;
+    display: grid;
+    place-items: center;
+  }
+  
+  .footerCard {
+    width: min(900px, 100%);
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+  
+  .footerTitle {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  
+  .footerText {
+    opacity: 0.85;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  
+  .code {
+    margin: 0 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(10, 20, 30, 0.08);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+  }
+  
