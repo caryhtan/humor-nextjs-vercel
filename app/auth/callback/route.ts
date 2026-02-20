@@ -29,5 +29,5 @@ export async function GET(request: Request) {
 
   console.log("Login success, redirecting to:", `${origin}${next}`);
 
-  return NextResponse.redirect(`${origin}${next}`);
+  return NextResponse.redirect(`${origin}/`);
 }
