@@ -34,12 +34,10 @@ function pickTopCaptions(rows: CaptionRow[]) {
       .slice(0, 80);
   }
 
-  // Otherwise just take a decent chunk (still looks good)
   return rows.slice(0, 80);
 }
 
 function BirdSVG() {
-  // Simple bird silhouette (works great for “flying” effect)
   return (
     <svg
       viewBox="0 0 64 32"
@@ -67,7 +65,71 @@ export default function ListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
+
+  // Auth + voting UI state
+  const [userId, setUserId] = useState<string | null>(null);
+  const [voting, setVoting] = useState<Record<string, boolean>>({});
+  const [voted, setVoted] = useState<Record<string, boolean>>({});
+  const [toast, setToast] = useState<string | null>(null);
+  const [redirectTo, setRedirectTo] = useState("/");
+
+  useEffect(() => {
+    setRedirectTo(window.location.pathname + window.location.search);
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+  
+    // 1) initial user
+    supabase.auth.getUser().then(({ data }) => {
+      if (ignore) return;
+      setUserId(data?.user?.id ?? null);
+    });
+  
+    // 2) keep userId updated after login/logout
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserId(session?.user?.id ?? null);
+    });
+  
+    return () => {
+      ignore = true;
+      listener.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  async function submitVote(captionId: string, voteValue: number) {
+    if (!userId) {
+      setToast("Log in to vote.");
+      return;
+    }
+
+    // prevent spam clicks
+    setVoting((m) => ({ ...m, [captionId]: true }));
+    setToast(null);
+
+    const { error } = await supabase.from("caption_votes").insert({
+      caption_id: captionId,
+      profile_id: userId,
+      vote_value: voteValue,
+      created_datetime_utc: new Date().toISOString(),
+    });
+
+    if (error) {
+      // unique constraint => already voted
+      if (String(error.code) === "23505") {
+        setToast("You already voted on this caption.");
+      } else {
+        setToast(`Vote failed: ${error.message}`);
+      }
+      setVoting((m) => ({ ...m, [captionId]: false }));
+      return;
+    }
+
+    setVoted((m) => ({ ...m, [captionId]: true }));
+    setToast(voteValue === 1 ? "Upvoted ✅" : "Downvoted ✅");
+    setVoting((m) => ({ ...m, [captionId]: false }));
+  }
 
   // UI controls (optional but makes it feel like a real product)
   const [showCount, setShowCount] = useState(10);
@@ -100,7 +162,7 @@ export default function ListPage() {
     };
 
     load();
-  }, []);
+  }, [supabase]);
 
   const selectedCaptions = useMemo(() => {
     const tops = pickTopCaptions(rows);
@@ -161,6 +223,7 @@ export default function ListPage() {
 
   return (
     <main className={styles.sky}>
+      {toast && <div className={styles.toast}>{toast}</div>}
       {/* Background layers */}
       <div className={styles.sun} />
       <div className={styles.cloudLayer}>
@@ -208,6 +271,21 @@ export default function ListPage() {
             <span className={styles.controlValue}>{speed.toFixed(1)}x</span>
           </label>
         </div>
+        <div style={{ marginLeft: "12px" }}>
+          {!userId ? (
+            <a className={styles.loginLink} href="/login">Log in</a>
+          ) : (
+            <button
+              className={styles.voteBtn}
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setToast("Logged out");
+              }}
+            >
+              Log out
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Status */}
@@ -247,6 +325,30 @@ export default function ListPage() {
                 <BirdSVG />
                 <div className={styles.bubble}>
                   <div className={styles.bubbleInner}>{content}</div>
+
+                  <div className={styles.voteRow}>
+                    <button
+                      className={styles.voteBtn}
+                      disabled={!userId || voting[cap?.id ?? ""] || voted[cap?.id ?? ""] || !cap?.id}
+                      onClick={() => cap?.id && submitVote(cap.id, 1)}
+                      title={!userId ? "Log in to vote" : "Upvote"}
+                    >
+                      👍
+                    </button>
+
+                    <button
+                      className={styles.voteBtn}
+                      disabled={!userId || voting[cap?.id ?? ""] || voted[cap?.id ?? ""] || !cap?.id}
+                      onClick={() => cap?.id && submitVote(cap.id, -1)}
+                      title={!userId ? "Log in to vote" : "Downvote"}
+                    >
+                      👎
+                    </button>
+
+                    {!userId && <span className={styles.voteHint}>Log in to vote</span>}
+                    {cap?.id && voted[cap.id] && <span className={styles.votedTag}>Voted</span>}
+                  </div>
+
                   <div className={styles.bubbleTail} />
                 </div>
               </div>

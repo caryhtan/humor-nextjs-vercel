@@ -290,4 +290,63 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 12px;
   }
+
+  .toast{
+    position: fixed;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    z-index: 50;
+    backdrop-filter: blur(8px);
+  }
   
+  .voteRow{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  
+  .voteBtn{
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.10);
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 150ms ease, background 150ms ease;
+  }
+  
+  .voteBtn:hover{
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.95);
+  }
+  
+  .voteBtn:disabled{
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .voteHint{
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 6px;
+  }
+  
+  .votedTag{
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.06);
+    margin-left: auto;
+  }
