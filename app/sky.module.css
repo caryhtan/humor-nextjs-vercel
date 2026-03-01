@@ -444,12 +444,12 @@
 
 .previewImg {
   width: 100%;
-  height: auto;              /* allow natural height */
-  max-height: 520px;         /* optional limit */
-  object-fit: contain;       /* ← show entire image */
+  height: auto;          /* key: let it keep natural aspect ratio */
+  max-height: 70vh;      /* optional: prevent it from being insanely tall */
+  object-fit: contain;   /* key: NEVER crop */
   border-radius: 14px;
   border: 1px solid rgba(0,0,0,0.08);
-  background: #f8f8f8;       /* optional: clean background */
+  display: block;
 }
 
 .uploadActions {
@@ -556,17 +556,23 @@
 }
 
 .previewWrap {
-  margin-top: 14px;
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
 }
 
-.previewImg{
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.10);
+.previewImg {
+  width: auto;          /* don’t force full width */
+  max-width: 100%;      /* stay responsive */
+  height: auto;
+  max-height: 420px;    /* control visual size */
+  object-fit: contain;  /* never crop */
+  display: block;
+  margin: 0 auto;       /* center it */
 }
 
 .generatedPanel{
