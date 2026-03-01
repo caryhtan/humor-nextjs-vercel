@@ -468,7 +468,7 @@ export default function ListPage() {
         {error && <p className={`${styles.pill} ${styles.pillError}`}>Error: {error}</p>}
         {!loading && !error && (
           <p className={styles.pill}>
-            Connected ✅ Rotating through {selectedCaptions.length} captions
+            Connected ✅ Live caption feed active
           </p>
         )}
       </section>
