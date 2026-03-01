@@ -62,14 +62,35 @@
     top: -70px;
   }
   
-  .cloud1 { top: 90px; left: -120px; animation: drift 40s linear infinite; }
-  .cloud2 { top: 160px; left: -260px; transform: scale(0.85); animation: drift 54s linear infinite; }
-  .cloud3 { top: 230px; left: -180px; transform: scale(0.95); animation: drift 47s linear infinite; }
-  .cloud4 { top: 120px; left: -420px; transform: scale(0.75); animation: drift 65s linear infinite; }
+  .cloud1 {
+    top: 90px;
+    left: 0;                 /* left doesn’t matter much anymore */
+    animation: drift 360s linear infinite;
+    animation-delay: 0s;
+  }
+  
+  .cloud2 {
+    top: 230px;
+    left: 0;
+    transform: scale(0.85);
+    animation: drift 420s linear infinite;
+    animation-delay: 140s;   /* stagger */
+  }
+  
+  .cloud3 {
+    top: 370px;
+    left: 0;
+    transform: scale(0.95);
+    animation: drift 390s linear infinite;
+    animation-delay: 260s;   /* stagger */
+  }
   
   @keyframes drift {
-    0% { transform: translateX(-10vw) scale(var(--s, 1)); }
-    100% { transform: translateX(120vw) scale(var(--s, 1)); }
+    0%   { transform: translateX(-140px); opacity: 0; }
+    6%   { opacity: 0.9; }
+    70%  { transform: translateX(calc(100vw + 240px)); opacity: 0.9; }
+    78%  { opacity: 0; }
+    100% { transform: translateX(calc(100vw + 240px)); opacity: 0; }
   }
   
   /* Header */
@@ -170,14 +191,15 @@
     border: 1px solid rgba(255, 80, 80, 0.25);
   }
   
-  /* Flight zone */
   .flightZone {
     position: relative;
-    z-index: 1;
+    z-index: 5;
     max-width: 1200px;
     margin: 0 auto;
     height: 62vh;
     min-height: 520px;
+    margin-top: 160px; /* space under uploader panel */
+    padding-top: 0;
   }
   
   /* Bird */
@@ -350,3 +372,222 @@
     background: rgba(0,0,0,0.06);
     margin-left: auto;
   }
+
+  .captionImg {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-bottom: 8px;
+  }
+
+/* Pause the bird animation when the user hovers anywhere on it */
+.bird:hover {
+  animation-play-state: paused;
+}
+
+/* Also pause when keyboard focusing inside the bubble (accessibility) */
+.bird:focus-within {
+  animation-play-state: paused;
+}
+
+/* Optional: make it obvious it can be paused */
+.birdWrap {
+  cursor: pointer;
+}
+
+/* Optional: keep bubble clickable without accidental misses */
+.bubble {
+  pointer-events: auto;
+}
+
+.uploadPanel {
+  width: min(1100px, 92vw);
+  margin: 14px auto 0;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+.uploadCard,
+.resultsCard {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 14px 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+}
+
+.uploadTitle {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.fileLabel{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fileInput{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.previewRow {
+  margin-top: 10px;
+}
+
+.previewImg {
+  width: 100%;
+  height: auto;              /* allow natural height */
+  max-height: 520px;         /* optional limit */
+  object-fit: contain;       /* ← show entire image */
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f8f8f8;       /* optional: clean background */
+}
+
+.uploadActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.pipelineStatus {
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+
+.resultsList {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.resultItem {
+  line-height: 1.25rem;
+}
+
+/* ===== NEW Upload / Pipeline Panel (matches JSX classNames) ===== */
+
+.uploaderPanel{
+  width: min(1100px, calc(100% - 48px));
+  margin: 18px auto 40px auto;
+  padding: 18px 18px 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.10);
+  position: relative;
+  z-index: 50; /* above clouds */
+}
+
+.uploaderHeader{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.uploaderTitle{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.statusChip{
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.06);
+  white-space: nowrap;
+}
+
+.uploaderControls{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fileButton{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.95);
+  font-weight: 700;
+  user-select: none;
+}
+
+.fileName{
+  font-size: 14px;
+  opacity: 0.75;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.primaryBtn{
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.88);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.previewWrap {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.previewImg{
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+.generatedPanel{
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.generatedTitle{
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.generatedList{
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.generatedItem{
+  line-height: 1.25rem;
+}
