@@ -445,10 +445,12 @@ export default function ListPage() {
         </div>
         <div style={{ marginLeft: "12px" }}>
           {!userId ? (
-            <a className={styles.loginLink} href="/login">Log in</a>
+            <a className={styles.authBtn} href="/login">
+              Log in
+            </a>
           ) : (
             <button
-              className={styles.voteBtn}
+              className={styles.logoutBtn}
               onClick={async () => {
                 await supabase.auth.signOut();
                 setToast("Logged out");

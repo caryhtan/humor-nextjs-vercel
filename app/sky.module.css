@@ -591,3 +591,43 @@
 .generatedItem{
   line-height: 1.25rem;
 }
+
+.logoutBtn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #ffffff, #f2f7ff);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.logoutBtn:hover {
+  background: rgba(255,255,255,0.95);
+  transform: translateY(-1px);
+}
+
+.authBtn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #ffffff, #f2f7ff);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #0b1b2b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 150ms ease;
+}
+
+.authBtn:hover {
+  background: rgba(255,255,255,0.95);
+  transform: translateY(-1px);
+}
