@@ -86,6 +86,8 @@ export default function ListPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [redirectTo, setRedirectTo] = useState("/");
   const [hoveredBirdId, setHoveredBirdId] = useState<string | null>(null);
+  const [tappedBirdId, setTappedBirdId] = useState<string | null>(null);
+  const [pausedAll, setPausedAll] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -294,7 +296,7 @@ export default function ListPage() {
 
   // UI controls (optional but makes it feel like a real product)
   const [showCount, setShowCount] = useState(10);
-  const [speed, setSpeed] = useState(1); // 1 = normal, <1 slower, >1 faster
+  const [speed, setSpeed] = useState(0.6); // 1 = normal, <1 slower, >1 faster
 
   useEffect(() => {
     const load = async () => {
@@ -380,7 +382,12 @@ export default function ListPage() {
       setBirdCaptions((prev) =>
         prev.map((b, idx) => {
           // ✅ Don't rotate caption if user is hovering this bird
-          if (hoveredBirdId && b.id === hoveredBirdId) return b;
+          if (
+            (hoveredBirdId && b.id === hoveredBirdId) ||
+            (tappedBirdId && b.id === tappedBirdId)
+          ) {
+            return b;
+          }
   
           const step = 1 + (idx % 3); // 1..3
           return {
@@ -392,7 +399,7 @@ export default function ListPage() {
     }, 9000);
   
     return () => clearInterval(interval);
-  }, [selectedCaptions.length, hoveredBirdId]);
+  }, [selectedCaptions.length, hoveredBirdId, tappedBirdId]);
 
   return (
     <main className={styles.sky}>
@@ -412,7 +419,7 @@ export default function ListPage() {
           <div>
             <h1 className={styles.title}>The Humor Project. Caption Sky</h1>
             <p className={styles.subtitle}>
-            Watch real Humor Project captions drift across the sky like passing thoughts.
+              Read the captions carried by each bird, pause them to explore, and rank the funniest ones.
             </p>
           </div>
         </div>
@@ -442,6 +449,14 @@ export default function ListPage() {
             />
             <span className={styles.controlValue}>{speed.toFixed(1)}x</span>
           </label>
+
+          {/* ADD THIS BUTTON HERE */}
+          <button
+            className={styles.pauseBtn}
+            onClick={() => setPausedAll((p) => !p)}
+          >
+            {pausedAll ? "Resume All Birds" : "Pause All Birds"}
+          </button>
         </div>
         <div style={{ marginLeft: "12px" }}>
           {!userId ? (
@@ -461,6 +476,12 @@ export default function ListPage() {
           )}
         </div>
       </header>
+
+      <section className={styles.instructions} aria-label="How to use Caption Sky">
+        <p className={styles.instructionsText}>
+          Hover or tap over a bird to pause and read its caption. On mobile, tap a bird to pause.
+        </p>
+      </section>
 
       {/* Status */}
       <section className={styles.status}>
@@ -525,6 +546,14 @@ export default function ListPage() {
       </section>
 
       {/* Birds */}
+      <div className={styles.pauseBar}>
+        <button
+          className={styles.pauseBtn}
+          onClick={() => setPausedAll((p) => !p)}
+        >
+          {pausedAll ? "Resume All Birds" : "Pause All Birds"}
+        </button>
+      </div>
       <section className={styles.flightZone} aria-label="Flying captions">
         {birdCaptions.map((b) => {
           const cap = selectedCaptions[b.captionIndex];
@@ -538,28 +567,40 @@ export default function ListPage() {
           const r = seededUnit(`${b.id}-${b.lane}`); // 0..1 stable
           const jitter = r * 10 - 5; // -5..+5
           const laneBase = b.lane % 2 === 0 ? -8 : 8;
-          const xShift = laneBase + jitter;          
+          const xShift = laneBase + jitter;   
+          const isPaused =
+            pausedAll ||
+            tappedBirdId === b.id ||
+            (!tappedBirdId && hoveredBirdId === b.id);  
           const styleVars = {
             ["--laneTop" as any]: `${topPct}%`,
             ["--dur" as any]: `${b.duration}s`,
             ["--delay" as any]: `${b.delay}s`,
             ["--scale" as any]: `${b.size}`,
             ["--xShift" as any]: `${xShift}vw`,
-          };          
+            animationPlayState: isPaused ? "paused" : "running",
+          };       
 
           return (
             <div
               key={b.id}
               className={styles.bird}
               style={styleVars}
+              tabIndex={0}
+              role="button"
+              aria-pressed={isPaused}
               onMouseEnter={() => setHoveredBirdId(b.id)}
               onMouseLeave={() => setHoveredBirdId((cur) => (cur === b.id ? null : cur))}
               onFocus={() => setHoveredBirdId(b.id)}
               onBlur={() => setHoveredBirdId((cur) => (cur === b.id ? null : cur))}
+              onClick={() => {
+                setTappedBirdId((cur) => (cur === b.id ? null : b.id));
+                setHoveredBirdId(null);
+              }}
             >
               <div className={styles.birdWrap}>
                 <BirdSVG />
-                <div className={styles.bubble}>
+                <div className={`${styles.bubble} ${isPaused ? styles.bubblePaused : ""}`}>
                   <div className={styles.bubbleInner}>
                     {imageUrl && (
                       <img
@@ -569,7 +610,9 @@ export default function ListPage() {
                       />
                     )}
 
-                    <div className={styles.captionText}>{content}</div>
+                    <div className={`${styles.captionText} ${isPaused ? styles.captionTextPaused : ""}`}>
+                      {content}
+                    </div>
                   </div>
 
                   <div className={styles.voteRow}>

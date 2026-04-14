@@ -637,3 +637,55 @@
   background: rgba(255,255,255,0.95);
   transform: translateY(-1px);
 }
+
+.instructions {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 8px;
+  padding: 0 16px;
+}
+
+.instructionsText {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #1f2937;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.pauseBtn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.pauseBtn:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.pauseBar {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 8px;
+}
+
+.bubblePaused {
+  transform: scale(1.04);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+}
+
+.captionTextPaused {
+  font-size: 1rem;
+  line-height: 1.5;
+}
